@@ -1,28 +1,299 @@
 <!DOCTYPE html> 
 <html> 
-   <head> 
-      <title>Hello World</title>  
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="mobile-web-app-capable" content="yes">
-      <link rel="stylesheet" href="w3.css">
-      <link rel="stylesheet" href="w3-colors-flat.css">
-   </head> 
-   
-   <body> 
+<!-- The following code has been developed by students and/or researchers of the Freshman Research Initiative DIY Diagnostics Stream at The University of Texas at Austin.  This code is shared for demonstration purposes and should not be considered a product -- it is for entertainment purposes only.  Any user of this code does so at their own risk. Members of the DIY Stream, FRI, and The University of Texas system are not liable for anything related to this code.
+ 
+THIS CODE SHOULD NOT BE USED TO DIAGNOSE ANY KIND OF MEDICAL CONDITION.
+ 
+ 
+Authors in chronological order of contribution:
+Tim Riedel
+Philip Nguyen 
 
-     	<header class="w3-container w3-flat-carrot">
-		<h1>This is the header!</h1>
-	</header>
+Further Information:
+http://diystream.cns.utexas.edu/
 
-	<div class="w3-container"><!-- place main content here and it will show up between header and footer.-->
-		
-		<p>Hello World! [Your Name] is here.</p>
+Research Educator:
+Timothy Riedel
+triedel@utexas.edu
+ 
+Brief Description of Goal of Code:
+This is my App 4 Assignment where I will create an app that diagnoses whether the user has a malignant or benign mole. 
+ 
+Known Issues:
+There are no known issues that I know of. 
+Ignore this error message if you see it using the javaScript console: Error with Permissions-Policy header: Origin trial controlled feature not enabled: 'interest-cohort'.
 
-	</div><!-- /content -->
+References:
+https://www.w3schools.com/w3css/default.asp
+https://stackoverflow.com/questions/8211128/multiple-distinct-pages-in-one-html-file
+-->
 	
-	<footer class="w3-bottom w3-container w3-flat-carrot">
-		<p>This is the footer!</p>
-	</footer>
-	   
-   </body>
+<head> 
+	<title>Malignant or Benign Mole?</title>  
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="w3.css">
+	<link rel="stylesheet" href="w3-colors-flat.css">
+</head> 
+
+<script>
+  var malignant_count = 0;//variable to keep track of the number of times the user answers a question that leads to the malignant diagnosis 
+  var benign_count = 0;//variable to keep track of the number of times the user answers a question that leads to the benign diagnosis 
+  
+  function malignant_add(){ //this function is used to add an additional count to malignant_count each time it is called
+    malignant_count = malignant_count + 1; 
+  }
+  function benign_add(){
+    benign_count = benign_count + 1;//this function is used to add an additional count to benign_count each time it is called
+  }
+
+	function changeText(){
+/* Commenting out the fixed malignant_count and benign_count
+      var malignant_count = 2;
+      var benign_count = 4;
+*/
+      var percent_malignant = malignant_count/(malignant_count + benign_count)*100; //This line converts the malignant_count into a percentage
+		var percent_benign = benign_count/(malignant_count + benign_count)*100; //This line converts the benign_count into a percentage
+		var initialText = document.getElementById("results"); //I put the "results" paragraph into a variable called "initialText"
+		initialText.innerHTML = "Probability it is malignant = " + percent_malignant + "% <br> Probability it is a benign = " + percent_benign + "%" //This line replaces the initialText from the Results Page with the diagnosis
+	}
+
+   function drawChart(){
+/* Commenting out the fixed malignant_count and benign_count
+      var malignant_count = 2;
+      var benign_count = 3;
+*/
+      var canvas = document.getElementById("myCanvas");
+      var context = canvas.getContext("2d");
+
+   // variables used to make grid marks on the y axis
+      var ground = 310;
+      var h_max = 250
+      var grid_spacing = h_max/(malignant_count + benign_count);
+      var grid_x = 75;
+      var grid_width = 10;
+      var grid_thickness = 2;
+
+   // variables used to make the malignant bar
+      var malignant_x = 130;
+      var malignant_ceiling = ground - malignant_count * grid_spacing;
+      var bar_width = 50;
+      var malignant_height = malignant_count * grid_spacing;
+
+
+   // creating the malignant bar
+      context.fillStyle = "blue";
+      context.fillRect(malignant_x, malignant_ceiling, bar_width, malignant_height);
+
+   // variables used to make the benign bar
+      var benign_x = 235;
+      var benign_ceiling = ground - benign_count * grid_spacing;
+      var benign_height = benign_count * grid_spacing;
+
+   // creating the benign bar
+      context.fillStyle = "red";
+      context.fillRect(benign_x, benign_ceiling, bar_width, benign_height);
+
+   // drawing the grid marks
+      context.fillStyle = "black";
+      context.fillRect(grid_x, ground - 1*grid_spacing, grid_width, grid_thickness);
+      context.fillRect(grid_x, ground - 2*grid_spacing, grid_width, grid_thickness);
+      context.fillRect(grid_x, ground - 3*grid_spacing, grid_width, grid_thickness);
+      context.fillRect(grid_x, ground - 4*grid_spacing, grid_width, grid_thickness);
+      context.fillRect(grid_x, ground - 5*grid_spacing, grid_width, grid_thickness);
+
+   // adding text boxes next to the grid marks
+      context.font = "11 px Arial";
+      context.fillStyle = "black";
+      context.fillText("20%", grid_x - 40, ground - 1*grid_spacing + 5);
+      context.fillText("40%", grid_x - 40, ground - 2*grid_spacing + 5);
+      context.fillText("60%", grid_x - 40, ground - 3*grid_spacing + 5);
+      context.fillText("80%", grid_x - 40, ground - 4*grid_spacing + 5);
+      context.fillText("100%", grid_x - 40, ground - 5*grid_spacing + 5);
+
+      // drawing the x and y axes
+         context.beginPath();
+         context.moveTo(80, 50);
+         context.lineTo(80, 310);
+         context.lineTo(330, 310);
+         context.stroke();
+      
+      // labeling the x axis
+         context.font = "13px Arial";
+         context.fillStyle = "black";
+         context.fillText("Malignant", 130, 330);
+         context.fillText("Benign", 247, 330);
+
+
+      // vertical y-axis label (rotated)
+         context.save(); // save current state
+         context.translate(20, canvas.height/2); // move origin to left-center
+         context.rotate(-Math.PI/2); // rotate counter-clockwise 90°
+         context.font = "14px Arial";
+         context.fillStyle = "black";
+         context.textAlign = "center";
+         context.fillText("Probability (%)", 0, 0); // draws centered vertically
+         context.restore(); // restore state
+
+   }
+/* Commenting out the window.addEventListener function.
+   window.addEventListener('load', function() {
+      changeText();
+      drawChart();
+   });
+*/
+
+</script>	
+
+
+<!-- THIS STYLE CODE HELPS MAKE YOUR APP LOOK GOOD. PROBABLY DONT MESS WITH IT -->
+<style>	
+  .body {
+      margin: 0em;
+  }
+
+  .page {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: -100vw;
+      overflow-y: auto;
+      z-index: 0;
+      background-color: hsl(0,0%,100%);
+  }
+
+  .page:target {
+      left: 0vw;
+      z-index: 1;
+  }
+
+  img, object{
+      max-height:60%; /*this code is for adjusting the height of an image*/
+      max-width:60%; /*this code is for adjusting the width of an image*/
+      margin-bottom: 150px; /*this code gives some more space between the image and the bottom of the screen*/
+      display:block; /*the following three lines of code ("display:block", "margin-left", and "margin-right") are used to center all images. */
+      margin-left: auto;
+      margin-right: auto;
+  }
+
+</style>
+
+<body>
+  <div id="header" class="w3-container w3-flat-carrot">
+	  <h1>Malignant or Benign Mole?</h1> 
+  </div>
+<!--this section displays the content that the user sees immediately upon opening the website-->
+  <div id="content" class="w3-container">
+	  <p>Do you have a mole on your body and wonder if it is possibly cancerous? Answer a few short questions to find out!</p> <!--Introduce the user to the website-->
+
+	  <a href="#one" class="w3-btn w3-grey w3-round"> Get Started </a> <!-- this line presents the first button that users click to proceed to page one-->
+	
+	  <p>The following code has been developed by students and/or researchers of the Freshman Research Initiative DIY Diagnostics Stream at The University of Texas at 		Austin.  This code is shared for demonstration purposes and should not be considered a product -- it is for entertainment purposes only. Any user of this code 			does so at their own risk. Members of the DIY Stream, FRI, and The University of Texas system are not liable for anything related to this code.</p>
+ 	
+	  <p>THIS CODE SHOULD NOT BE USED TO DIAGNOSE ANY KIND OF MEDICAL CONDITION.</p>
+    <img src="https://th.bing.com/th/id/OIP.Ucc6U5eTPb8UKjYtkhSQUQHaHa?rs=1&pid=ImgDetMain" 
+    alt="Diagram of the Skin"
+    > <!--I added an image of the skin diagram-->
+
+  </div>
+<!-- this section displays Page for Question 1 and gives user the yes/no options-->
+  <div class="page" id="one">
+	  <div id="header" class="w3-container w3-flat-carrot"> <!--creating the header for Q1-->
+		  <h1>Question 1</h1>
+	  </div>
+	  
+    <div id="content" class="w3-container"> <!--creating the question and buttons for Q1-->
+	  	<p>Is your mole symmetrical? (Are the two halves of your mole mirror images of each other?) </p> <!--I asked the question for Question 1 (Q1) here.-->  
+	  	<a href="#two" onclick="benign_add();" class="w3-btn w3-orange"> Yes </a> <!-- Create Yes (symmetrical) button for Q1. If clicked, adds one to benign_count-->
+      <a href="#two" onclick="malignant_add();" class="w3-btn w3-orange"> No </a> <!-- Create No (asymmetrical) button for Q1. If clicked, adds one to malignant_count-->
+      <p><br></p> <!--I added vertical space between the Yes/No buttons and the image-->
+      <img src="images/mole_symmetry.png" 
+      alt="Mole Symmetry Diagram"> <!--I added an image to Question 1-->
+    </div>
+  </div>
+<!-- this section displays page for Question 2 and gives user the yes/no options-->
+
+  <div class="page" id="two">
+    <div id="header" class="w3-container w3-flat-carrot"> <!--creating the header for Q2-->
+      <h1>Question 2</h1>
+    </div>
+    
+    <div id="content" class="w3-container"> <!--creating the question and buttons for Q2-->
+      <p>Does your mole have an irregular or poorly defined border that blends into the surrounding skin?</p> <!--I asked the question for Q2 here.--> 
+      <a href="#three" onclick="malignant_add();" class="w3-btn w3-orange"> Yes </a> <!-- Create Yes button for Q2. If clicked, adds one to malignant_count-->
+      <a href="#three" onclick="benign_add();" class="w3-btn w3-orange"> No </a> <!-- Create No button for Q2. If clicked, adds one to benign_count-->
+      <p><br></p> <!--I added vertical space between the Yes/No buttons and the image-->
+      <img src="images/mole_definition.png"
+      alt="Mole Definition Diagram"> <!--I added an image to Question 2-->
+    </div>
+  </div>	
+<!-- this section displays page for Question 3 and gives user the yes/no options-->
+  <div class="page" id="three">
+    <div id="header" class="w3-container w3-flat-carrot"> <!--creating the header for Q3-->
+      <h1>Question 3</h1>
+    </div>
+
+    <div id="content" class="w3-container"> <!--creating the question and buttons for Q3-->
+      <p>Does your mole have one uniform color or has multiple colors?</p> <!--I asked the question for Q3 here.--> 
+      <a href="#four" onclick="benign_add();" class="w3-btn w3-orange"> Uniform </a> <!-- Create Yes (Uniform) button for Q3. If clicked, adds one to benign_count-->
+      <a href="#four" onclick="malignant_add();" class="w3-btn w3-orange"> Multiple </a> <!-- Create No (Multiple) button for Q3. If clicked, adds one to malignant_count-->
+      <p><br></p> <!--I added vertical space between the Yes/No buttons and the image-->
+      <img src="images/mole_color_number.png"
+      alt="Mole Color Number Diagram"> <!--I added an image to Question 3-->
+    </div>
+  </div>
+<!-- this section displays Page for Question 4 and gives user the yes/no options-->
+  <div class="page" id="four">
+    <div id="header" class="w3-container w3-flat-carrot"> <!-- creating the header for Q4-->
+      <h1>Question 4</h1>
+    </div>
+
+    <div id="content" class="w3-container">
+      <p>Is your mole larger than 6 mm (about the size of a pencil eraser)?</p> <!--I asked the question for Q4 here.--> 
+      <a href="#five" onclick="malignant_add();" class="w3-btn w3-orange"> Yes </a> <!-- Create Yes button for Q4. If clicked, adds one to malignant_count-->
+      <a href="#five" onclick="benign_add();" class="w3-btn w3-orange"> No </a> <!-- Create No button for Q4. If clicked, adds one to benign_count-->
+      <p><br></p> <!--I added vertical space between the Yes/No buttons and the image-->
+      <img src="images/mole_size.png"
+      alt="Mole Size Diagram"> <!--I added an image to Question 4-->
+    </div>
+  </div>
+  <!-- this section displays Page for Question 5 and gives user the yes/no options-->
+  <div class="page" id="five">
+    <div id="header" class="w3-container w3-flat-carrot"> <!-- creating the header for Q5-->
+      <h1>Question 5</h1>
+    </div>
+
+    <div id="content" class="w3-container">
+      <p>Has your mole changed over time, such as growing larger or changing color? </p> <!--I asked the question for Q5 here.-->
+      <a href="#six" onclick="malignant_add();" class="w3-btn w3-orange"> Yes </a> <!-- Create Yes button for Q5. If clicked, adds one to malignant_count-->
+      <a href="#six" onclick="benign_add();" class="w3-btn w3-orange"> No </a> <!-- Create No button for Q5. If clicked, adds one to benign_count-->
+      <p><br></p> <!--I added vertical space between the Yes/No buttons and the image-->
+      <img src="images/mole_change.png"
+      alt="Mole Change Diagram"> <!--I added an image to Question 5-->
+    </div>
+  </div>
+  <div class="page" id="six">
+    <div id="header" class="w3-container w3-flat-carrot"> <!--I made the header for the results page-->
+      <h1>Results Page</h1>
+    </div>
+
+    <div id="content" class="w3-container">
+      <p id="results">Press on the button below to see your results!</p> <!--This paragraph should be converted to the diagnosis statement after clicking on the results button-->
+      <a href="#six" onclick="changeText(); drawChart();"  class="w3-btn w3-orange">Click Here for Results!</a> <!--This is the Results Button. Pressing on it should change the text-->
+      <br>
+      <br>
+      <canvas id="myCanvas" width = 360 height = 360 style="border:1px solid #d3d3d3;"></canvas>
+      <p><br></p>
+      <img src="https://th.bing.com/th/id/OIP.Ucc6U5eTPb8UKjYtkhSQUQHaHa?rs=1&pid=ImgDetMain" 
+      alt="Diagram of the Skin"> <!--Inserted an image on the results page-->
+    </div>
+  </div>	
+
+
+  <footer class="w3-bottom w3-container w3-flat-carrot">
+    <p>DIY!</p>
+  </footer>
+	
+</body>
 </html>
